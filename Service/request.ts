@@ -1,3 +1,4 @@
+import { log } from "console";
 import http from "./http";
 
 export function registerIndividualUser(data: object) {
@@ -143,4 +144,10 @@ export function getInvitedUsers() {
 
 export function fetchRequestDetails(data: string | string[]) {
   return http.get(`addresses/${data}`);
+}
+
+export function fetchUserDetails(data: {}) {
+  console.log(data);
+
+  return http.get(`/admins/user`, data);
 }

@@ -9,6 +9,8 @@ import {
   ApproveRequest,
   adminDeactivateApprovedUser,
   fetchRequestDetails,
+  fetchUserDetails,
+  getUsersProfile,
   getrequestDetailApi,
   rejectRequest,
 } from "../../../../../../Service/request";
@@ -59,6 +61,20 @@ function ViewReport() {
       .then((res) => {
         console.log(res.data.data);
 
+        setRequestDetails(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const getUserDetails = () => {
+    console.log(requestDetails?.email);
+
+    fetchUserDetails({
+      workEmail: "tolu18@yopmail.com",
+    })
+      .then((res) => {
+        console.log("user details", res.data.data);
         setRequestDetails(res.data.data);
       })
       .catch((err) => {
@@ -166,6 +182,9 @@ function ViewReport() {
   };
   useEffect(() => {
     getRequestsDetails();
+    setTimeout(() => {
+      getUserDetails();
+    }, 2000);
   }, []);
 
   return (
@@ -299,14 +318,14 @@ function ViewReport() {
                 </div>
               </div>
             ) : null}
-            {requestDetails?.requestStatus === "approved" ? (
+            {/* {requestDetails?.requestStatus === "approved" ? (
               <div
                 onClick={() => setShowDeactivationModal(true)}
                 className="w-[150px] h-[50px] rounded-md mt-5 bg-red-500  flex items-center  justify-center"
               >
                 <h1>Deactivate User</h1>
               </div>
-            ) : null}
+            ) : null} */}
           </div>
         </div>
         {showApprovalModal ? (
