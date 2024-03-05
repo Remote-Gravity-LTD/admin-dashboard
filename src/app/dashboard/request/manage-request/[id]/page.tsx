@@ -39,6 +39,8 @@ type requestType = {
   requestStatus: string;
   rcNumber: string;
   idNumber: string;
+  userStatus: string;
+  workEmail: string;
 };
 function ViewReport() {
   const ref = useRef<HTMLDivElement>(null);
@@ -48,10 +50,13 @@ function ViewReport() {
   const [requestDetails, setRequestDetails] = useState<requestType | null>(
     null
   );
+  const [userDetails, setUserDetails] = useState<requestType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [showApprovalModal, setShowApprovalModal] = useState<boolean>(false);
   const [showRejectionModal, setShowRejectionModal] = useState<boolean>(false);
   const [reasonforRejection, setReasonForRejection] = useState<string>("");
+  const [accountName, setAccountName] = useState<string>("");
+  const [accountId, setAccountId] = useState<string>("");
   const [showDeactivationModal, setShowDeactivationModal] =
     useState<boolean>(false);
   const [reasonforDeactivation, setReasonForDeactivation] =
@@ -59,23 +64,20 @@ function ViewReport() {
   const getRequestsDetails = () => {
     getrequestDetailApi(id)
       .then((res) => {
-        console.log(res.data.data);
-
+        console.log(res.data.data.email);
         setRequestDetails(res.data.data);
+        getUserDetails(res.data.data.email);
       })
       .catch((err) => {
         console.log(err);
       });
   };
-  const getUserDetails = () => {
-    console.log(requestDetails?.email);
-
-    fetchUserDetails({
-      workEmail: "tolu18@yopmail.com",
-    })
+  const getUserDetails = (email: string) => {
+    console.log("email", email);
+    fetchUserDetails(email)
       .then((res) => {
         console.log("user details", res.data.data);
-        setRequestDetails(res.data.data);
+        setUserDetails(res.data.data);
       })
       .catch((err) => {
         console.log(err);
@@ -120,7 +122,25 @@ function ViewReport() {
   };
 
   const approveRequestHandler = () => {
-    ApproveRequest(id)
+    if (accountName === "") {
+      notification.error({
+        message: "Account Name Required",
+        description: "Please provide an Account Name ",
+      });
+      return;
+    }
+    if (accountId === "") {
+      notification.error({
+        message: "Account Id Required",
+        description: "Please provide an Account Id ",
+      });
+      return;
+    }
+    let data = {
+      zohoAccountID: accountId,
+      zohoAccountName: accountName,
+    };
+    ApproveRequest(id, data)
       .then((res) => {
         notification.success({
           message: "Request Approved!",
@@ -182,9 +202,6 @@ function ViewReport() {
   };
   useEffect(() => {
     getRequestsDetails();
-    setTimeout(() => {
-      getUserDetails();
-    }, 2000);
   }, []);
 
   return (
@@ -235,7 +252,9 @@ function ViewReport() {
               <div>
                 <h1 className="text-[#0B1F3F] text-xl font-[500]">Email</h1>
                 <h1 className="text-[#0B1F3F] text-base font-[500] mt-1">
-                  {requestDetails?.email}
+                  {requestDetails?.email
+                    ? requestDetails?.email
+                    : requestDetails?.workEmail}
                 </h1>
               </div>
               <div className="w-[50%]">
@@ -262,7 +281,9 @@ function ViewReport() {
                     Request Status
                   </h1>
                   <h1 className="text-[#0B1F3F] text-base font-[500] mt-1">
-                    {requestDetails?.requestStatus}
+                    {requestDetails?.requestStatus
+                      ? requestDetails?.requestStatus
+                      : requestDetails?.userStatus}
                   </h1>
                 </div>
               </div>
@@ -293,7 +314,9 @@ function ViewReport() {
                         Request Status
                       </h1>
                       <h1 className="text-[#0B1F3F] text-base font-[500] mt-1">
-                        {requestDetails?.requestStatus}
+                        {requestDetails?.requestStatus
+                          ? requestDetails?.requestStatus
+                          : requestDetails?.userStatus}
                       </h1>
                     </div>
                   </div>
@@ -318,14 +341,14 @@ function ViewReport() {
                 </div>
               </div>
             ) : null}
-            {/* {requestDetails?.requestStatus === "approved" ? (
+            {userDetails?.userStatus === "activated" ? (
               <div
                 onClick={() => setShowDeactivationModal(true)}
                 className="w-[150px] h-[50px] rounded-md mt-5 bg-red-500  flex items-center  justify-center"
               >
                 <h1>Deactivate User</h1>
               </div>
-            ) : null} */}
+            ) : null}
           </div>
         </div>
         {showApprovalModal ? (
@@ -334,7 +357,9 @@ function ViewReport() {
               <div className="w-[80%] flex justify-end">
                 {" "}
                 <div
-                  onClick={() => {}}
+                  onClick={() => {
+                    setShowApprovalModal(false);
+                  }}
                   className="bg-[#DDF3EB]   rounded-full h-[25px] w-[25px]  flex items-center justify-center"
                 >
                   <Image
@@ -352,6 +377,26 @@ function ViewReport() {
                   {" "}
                   Are you sure you want to approve this Request ?
                 </h1>
+                <div className="w-full  mt-[20px]">
+                  <input
+                    value={accountName}
+                    placeholder="Input account Name"
+                    className="text-sm h-[60px] w-full mt-1   text-black px-5 border-[1px] border-[#0B1F3F] rounded-[10px] font-normal focus:outline-none outline:border-brand-200  focus:border-green-200 placeholder:text-sm placeholder:#B3B4BB) placeholder:font-normal"
+                    onChange={(e) => {
+                      setAccountName(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="w-full  mt-[20px]">
+                  <input
+                    value={accountId}
+                    placeholder="Input account Id"
+                    className="text-sm h-[60px] w-full mt-1   text-black px-5 border-[1px] border-[#0B1F3F] rounded-[10px] font-normal focus:outline-none outline:border-brand-200  focus:border-green-200 placeholder:text-sm placeholder:#B3B4BB) placeholder:font-normal"
+                    onChange={(e) => {
+                      setAccountId(e.target.value);
+                    }}
+                  />
+                </div>
                 <div className="w-full flex mt-10">
                   <div
                     onClick={() => {

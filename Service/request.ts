@@ -43,13 +43,10 @@ export function getCorporateRequestsByStatus(status: string) {
   return http.get(`admins/requests/corporate/${status}`);
 }
 
-export function ApproveRequest(id: string | string[]) {
-  return http.patch(`admins/request/${id}`);
+export function ApproveRequest(id: string | string[], data: object) {
+  return http.patch(`admins/request/${id}`, data);
 }
 
-// export function rejectRequest(id: string | string[], data: {}) {
-//   return http.delete(`/admins/request/${id}`, data);
-// }
 export function adminDeactivateApprovedUser(data: {}) {
   console.log("datatata", data);
 
@@ -146,8 +143,6 @@ export function fetchRequestDetails(data: string | string[]) {
   return http.get(`addresses/${data}`);
 }
 
-export function fetchUserDetails(data: {}) {
-  console.log(data);
-
-  return http.get(`/admins/user`, data);
+export function fetchUserDetails(email: string | undefined) {
+  return http.get(`/admins/user?workEmail=${email}`);
 }
