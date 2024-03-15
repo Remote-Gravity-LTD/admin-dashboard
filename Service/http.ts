@@ -7,7 +7,7 @@ if (typeof window !== "undefined") {
   console.log("tokennn", token);
 }
 const http = axios.create({
-  baseURL: "https://iddprmzmhp.us-east-1.awsapprunner.com/api/v1/",
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   headers: {
     Authorization: " Bearer " + token,
     Accept: "application/json",
