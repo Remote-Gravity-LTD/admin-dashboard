@@ -72,6 +72,7 @@ export function getAllAdmins() {
 export function getrequestDetailApi(id: string | string[]) {
   return http.get(`/admins/request/${id}`);
 }
+
 export function logout(data: object) {
   return http.post(`/logout`, data);
 }

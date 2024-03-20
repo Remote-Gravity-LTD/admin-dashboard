@@ -64,22 +64,13 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
       name: "Settings",
       icon: SettingsIcon,
     },
+    {
+      id: 12,
+      path: "/dashboard/uploadCSV",
+      name: "Upload CSV",
+      icon: SettingsIcon,
+    },
   ];
-
-  // const footerRoutes = [
-  //   // {
-  //   //   id: 14,
-  //   //   path: "/settings",
-  //   //   name: "Settings center",
-  //   //   //   icon: HelpIcon,
-  //   // },
-  //   // {
-  //   //   id: 15,
-  //   //   path: "/help",
-  //   //   name: "Help center",
-  //   //   //   icon: HelpIcon,
-  //   // },
-  // ];
 
   return (
     <nav
@@ -222,6 +213,27 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                   ) : route.name === "Settings" ? (
                     <Link
                       href={"/dashboard/settings"}
+                      className={
+                        path?.includes(route.path)
+                          ? "link-item-active"
+                          : "link-item"
+                      }
+                      // redirecthref={route.path}
+                    >
+                      <Image
+                        src={SettingsIcon}
+                        width={19}
+                        height={18}
+                        alt={"Hero"}
+                        className="cursor-pointer "
+                      />
+                      <span className="link-item  hide-on-collapse">
+                        {route.name}
+                      </span>
+                    </Link>
+                  ) : route.name === "Upload CSV" ? (
+                    <Link
+                      href={"/dashboard/uploadCSV"}
                       className={
                         path?.includes(route.path)
                           ? "link-item-active"
